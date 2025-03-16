@@ -3,12 +3,8 @@ import { userRouter } from './Routes/user'
 import { blogRouter } from './Routes/blog'
 
 
-type Bindingssss = {
-  DATABASE_URL: string
-  JWT_SECRET: string
-}
+const app = new Hono()
 
-const app = new Hono<{Bindings: Bindingssss}>()
 app.route("/api/v1/user", userRouter);
 app.route("/api/v1/blog", blogRouter);
 
