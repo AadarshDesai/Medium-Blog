@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { genSaltSync, hashSync, compareSync } from 'bcrypt-ts'
 import { decode, sign, verify } from 'hono/jwt'
+import { signupInput, signinInput } from "@aadarsh.codes/medium-common"
+
 
 type Bindings = {
     DATABASE_URL: string
@@ -17,7 +19,13 @@ userRouter.post('/signup', async (c)=>{
       datasourceUrl: c.env.DATABASE_URL
     }).$extends(withAccelerate())
     const body = await c.req.json();
-    //zod validation.
+    const {success} = signupInput.safeParse(body);
+    if(!success){
+      c.status(411);
+      return c.json({
+        message: "Inputs not correct"
+      })
+    }
     const salt = genSaltSync(10);
     const hashedPass = hashSync(body.password, salt);
     try{
@@ -42,6 +50,13 @@ userRouter.post('/signup', async (c)=>{
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate())
     const body = await c.req.json();
+    const {success} = signinInput.safeParse(body);
+    if(!success){
+      c.status(411);
+      return c.json({
+        message: "Inputs not correct"
+      })
+    }
     try{
       const user = await prisma.user.findUnique({
         where :{
