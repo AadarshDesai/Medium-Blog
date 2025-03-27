@@ -1,14 +1,30 @@
 import { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {signupInput} from "@aadarsh.codes/medium-common"
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 //Read about TRPC project for more strict type safety on both frontend and backend.
 export function Auth({type}: {type: "signup" | "signin"}){
+    const navigate = useNavigate();
     const [postInputs, setPostInputs] = useState<signupInput>({
         email: "",
         password: "",
         name: ""
     }) //This is how we can add types to state variables.
+
+    async function sendRequest(){
+        try{
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
+            const jwt = response.data;
+            localStorage.setItem("token", jwt);
+            navigate("/blogs");
+        } catch(e){
+            alert("Error while signing up");
+            //Alert user here that request failed.
+        }
+
+    }
 
     return <div className="h-screen flex justify-center flex-col">
         <div className="flex justify-center">
@@ -23,28 +39,27 @@ export function Auth({type}: {type: "signup" | "signin"}){
                     </div>
                 </div>
                 <div className="pt-4">
+                {type === "signup" ? 
                     <LabelledInput label="Username" placeholder="Enter your username" onChange={(e)=>{
                         setPostInputs({
                             ...postInputs,
                             name: e.target.value
                         })
-                    }}/>
-                    {type === "signup" ? 
+                    }}/> : null}
+                    
                         <LabelledInput label="Email" placeholder="email@example.com" onChange={(e)=>{
                             setPostInputs({
                                 ...postInputs,
                                 email: e.target.value
                             })
-                        }}/> : <></>
-                    }
-                    
+                        }}/>
                     <LabelledInput label="Password" type={"password"} placeholder="********" onChange={(e)=>{
                         setPostInputs({
                             ...postInputs,
                             password: e.target.value
                         })
                     }}/>
-                    <button type="button" className="w-full mt-4 text-white bg-black hover:bg-gray-900 
+                    <button onClick={sendRequest} type="button" className="w-full mt-4 text-white bg-black hover:bg-gray-900 
                     focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 
                     py-2.5 mb-2" >{type === "signup" ? "Sign Up" : "Sign In"}</button>
                 </div>

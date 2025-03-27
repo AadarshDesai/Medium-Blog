@@ -69,7 +69,7 @@ userRouter.post('/signin', async (c)=>{
     });
     if(user && compareSync(body.password, user.password)){
       const token = await sign({id: user.id}, c.env.JWT_SECRET)
-      return c.json({ message : "Password matches", jwt: token })
+      return c.json({jwt: token })
     } else {
       return c.json({error: "Incorrect username or password"})
     }
