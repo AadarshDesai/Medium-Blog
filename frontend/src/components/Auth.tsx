@@ -16,9 +16,13 @@ export function Auth({type}: {type: "signup" | "signin"}){
     async function sendRequest(){
         try{
             const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`, postInputs);
-            const jwt = response.data;
-            localStorage.setItem("token", jwt);
-            navigate("/blogs");
+            if(!response.data.jwt){
+                alert("Incorrect Username or Password!")
+            }else{
+                const jwt = response.data;
+                localStorage.setItem("token", jwt.jwt);
+                navigate("/blogs");
+            }
         } catch(e){
             alert("Error while signing up");
             //Alert user here that request failed.
