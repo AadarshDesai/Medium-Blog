@@ -1,39 +1,44 @@
+import { Link } from "react-router-dom";
 
 interface BlogCardProps {
     authorName: string;
     title: string;
     content: string;
     publishedOn: string;
+    id: string;
 }
 
 
 export function BlogCard({
+    id,
     authorName,
     title,
     content,
     publishedOn
 } : BlogCardProps) {
-    return <div className="border-b border-slate-200 p-4 pb-4 w-screen max-w-screen-md cursor-pointer">
-        <div className="flex">
-            <Avatar name={authorName} />
-            <div className="pl-2 font-extralight text-sm flex justify-center flex-col">{authorName}</div>
-            <div className="flex justify-center flex-col pl-2 pt-1">
-                <Circle />
+    return <Link to={`/blog/${id}`}>
+        <div className="border-b border-slate-200 p-4 pb-4 w-screen max-w-screen-md cursor-pointer min-w-4/5">
+            <div className="flex">
+                <Avatar name={authorName} />
+                <div className="pl-2 font-extralight text-sm flex justify-center flex-col">{authorName}</div>
+                <div className="flex justify-center flex-col pl-2 pt-1">
+                    <Circle />
+                </div>
+                <div className="text-slate-500 text-sm font-thin pl-2 flex justify-center flex-col">
+                    {publishedOn}
+                </div>
             </div>
-            <div className="text-slate-500 text-sm font-thin pl-2 flex justify-center flex-col">
-                {publishedOn}
+            <div className="text-xl font-semibold pt-2">
+                {title}
+            </div>
+            <div className="text-md font-thin">
+                {content.slice(0,100) + "... "}
+            </div>
+            <div className="text-slate-500 text-sm font-thin pt-4">
+                {`${Math.ceil(content.length/1000)} min(s) read`}
             </div>
         </div>
-        <div className="text-xl font-semibold pt-2">
-            {title}
-        </div>
-        <div className="text-md font-thin">
-            {content.slice(0,100) + "... "}
-        </div>
-        <div className="text-slate-500 text-sm font-thin pt-4">
-            {`${Math.ceil(content.length/1000)} min(s) read`}
-        </div>
-    </div>
+    </Link>
 }
 
 function Circle(){
