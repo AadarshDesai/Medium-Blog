@@ -1,4 +1,6 @@
+import { Appbar } from "../components/Appbar";
 import { FullBlog } from "../components/FullBlog";
+import { FullBlogSkeleton } from "../components/FullBlogSkeleton";
 import { useBlog } from "../hooks"
 import { useParams } from "react-router-dom";
 
@@ -9,7 +11,8 @@ export function Blog(){
     });
     if(loading){
         return <div>
-            Loading...
+            <Appbar/>
+            <FullBlogSkeleton />
         </div>
     }
     return <div>
